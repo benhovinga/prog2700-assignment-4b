@@ -14,7 +14,22 @@
 
     <main>
         <div id="gameSelect">
-            <!-- TODO: Add level selector (6x6, 8x8, 10x10, ...) -->
+            <label for="gameLevelSelect">Game level:</label>
+            <select name="gameLevelSelect" id="gameLevelSelect">
+                <hr />
+                <optgroup label="Standard levels">
+                    <option value="6x6">6x6 Grid</option>
+                    <option value="8x8">8x8 Grid</option>
+                    <option value="10x10">10x10 Grid</option>
+                    <option value="12x12">12x12 Grid</option>
+                    <option value="14x14">14x14 Grid</option>
+                </optgroup>
+                <hr />
+                <optgroup label="Other levels">
+                    <option value="sample" title="A predefined 6x6 sample grid">Sample Grid</option>
+                    <option value="random" title="A randomly sized grid">Random Grid</option>
+                </optgroup>
+            </select>
         </div>
 
         <div id="gameGrid">
