@@ -125,6 +125,13 @@
     /** @type {HTMLButtonElement} */
     #buttonElement;
 
+    /**
+     * Represents a single cell on the grid
+     * 
+     * @param {number} initState 
+     * @param {number} correctState 
+     * @param {boolean} isLocked 
+     */
     constructor(initState, correctState, isLocked) {
       // Validate and set the initial state property
       if (!GridCell.isStateValid(initState))
