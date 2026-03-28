@@ -13,27 +13,27 @@
    * @license MIT
    */
   function createLogger(logLevel = "log", enabled = true) {
-      // Define console colors for each log level
-      const colors = {
-          "log": "\x1b[30m", // BLACK
-          "error": "\x1b[31m", // RED
-          "warn": "\x1b[33m", // YELLOW
-          "info": "\x1b[36m", // CYAN
-          "debug": "\x1b[35m", // MAGENTA
-      };
-      const reset = "\x1b[0m";  // RESET COLOR
+    // Define console colors for each log level
+    const colors = {
+      "log": "\x1b[30m", // BLACK
+      "error": "\x1b[31m", // RED
+      "warn": "\x1b[33m", // YELLOW
+      "info": "\x1b[36m", // CYAN
+      "debug": "\x1b[35m", // MAGENTA
+    };
+    const reset = "\x1b[0m";  // RESET COLOR
 
-      // Validate logLevel
-      if (!colors.hasOwnProperty(logLevel))
-          throw TypeError(`${logLevel} is not a valid logLevel.`);
+    // Validate logLevel
+    if (!colors.hasOwnProperty(logLevel))
+      throw TypeError(`${logLevel} is not a valid logLevel.`);
 
-      // Build prefix string
-      const prefix = `${colors[logLevel]}[${logLevel.toUpperCase()}]${reset}`;
+    // Build prefix string
+    const prefix = `${colors[logLevel]}[${logLevel.toUpperCase()}]${reset}`;
 
-      // Return logger function
-      return function (...args) {
-          if (enabled) console[logLevel](prefix, ...args);
-      }
+    // Return logger function
+    return function (...args) {
+      if (enabled) console[logLevel](prefix, ...args);
+    }
   }
 
   // Create console loggers
@@ -72,7 +72,7 @@
       debug("Initial level:", this.currentLevel);
 
       // Add onChange event listener to the level selector
-      this.selectorElement.addEventListener('change', (e) => {this.onChange(e);});
+      this.selectorElement.addEventListener('change', (e) => { this.onChange(e); });
     }
 
     /**
@@ -93,7 +93,7 @@
      * 
      * @param {String} value
      */
-     set currentLevel(value) {
+    set currentLevel(value) {
       if (!Level.isLevelValid(value))
         throw new Error(`Invalid level "${value}"`);
       this.#currentLevel = value;
@@ -104,7 +104,7 @@
      * @param {Event} event
      */
     onChange(event) {
-      if(!event.target || !(event.target instanceof HTMLSelectElement))
+      if (!event.target || !(event.target instanceof HTMLSelectElement))
         throw new Error("Event target must be instance of HTMLSelectElement");
       // TODO: Load the puzzle from the API
 
@@ -114,6 +114,7 @@
       info("New level selected:", this.currentLevel);
     }
   }
+
 
   class GridCell {
     /** @type {number} */
@@ -203,7 +204,7 @@
       // TODO: Add style to button element
       const element = document.createElement("button");
       element.value = this.getState();
-      element.addEventListener('click', (e) => {this.onClick(e);});
+      element.addEventListener('click', (e) => { this.onClick(e); });
       return element;
     }
 
@@ -218,6 +219,7 @@
       }
     }
   }
+
 
   class Puzzle {
     #gameGridElement;
@@ -240,6 +242,7 @@
         throw new Error("potato");
     }
   }
+
 
   const gameLevel = new Level();
 })();
