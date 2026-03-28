@@ -54,7 +54,7 @@
      * @param {string} level 
      * @returns {boolean}
      */
-    const isLevelValid = (level) => typeof value === 'string' && LEVELS.includes(value);
+    const isLevelValid = (level) => typeof level === 'string' && LEVELS.includes(level);
 
     /** 
      * Returns the currently selected level 
