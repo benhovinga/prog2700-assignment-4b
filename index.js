@@ -41,18 +41,35 @@
     if (!element || !(element instanceof HTMLSelectElement))
       throw new Error("Fatal Error: Unable to find select element with id 'gameLevelSelect'.");
     
-    /** Returns the level selector HTML element */
-    const getElement = () => {return element;};
+    /** 
+     * Returns the level selector HTML element
+     * 
+     * @returns {HTMLSelectElement}
+     */
+    const getElement = () => element;
 
-    /** Returns the currently selected level */
-    const getLevel = () => {return element.value;};
+    /**
+     * Check if the provided level is a valid level.
+     * 
+     * @param {string} level 
+     * @returns {boolean}
+     */
+    const isLevelValid = (level) => typeof value === 'string' && LEVELS.includes(value);
+
+    /** 
+     * Returns the currently selected level 
+     * 
+     * @returns {string}
+     */
+    const getLevel = () => element.value;
 
     /** 
      * Set the game level
+     * 
      * @param {string} value
      */
     const setLevel = (value) => {
-      if (!value || typeof value !== 'string' || !LEVELS.includes(value))
+      if (!isLevelValid(value))
         throw new Error(`Invalid level "${value}"`);
       element.value = value;
     }
@@ -61,7 +78,36 @@
       LEVELS,
       getElement,
       getLevel,
-      setLevel
+      setLevel,
+      isLevelValid,
     };
   })();
+
+
+  /**
+   * Makes a request to the API to get a new puzzle.
+   * @param {string} level 
+   * @returns {Cell[][]}
+   */
+  const fetchNewPuzzle = async (level) => {
+    const API_BASE = "https://prog2700.onrender.com/threeinarow/";
+
+    // Ensure provided level is valid
+    if (!gameLevel.isLevelValid(level))
+      throw new Error(`Invalid level '${level}'.`);
+
+    // Make the fetch request
+    const response = await fetch(API_BASE + level);
+    if (!response.ok)
+      throw new Error(`HTTP error! Status: ${response.status} ${response.statusText}`);
+
+    // Parse the json
+    const json = await response.json();
+
+    return Array(...json['rows']).map((row) => {
+      return Array(...row).map((cell) => {
+        return new Cell(cell.currentState, cell.correctState, cell.canToggle);
+      });
+    });
+  };
 })();
