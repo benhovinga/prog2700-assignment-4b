@@ -106,7 +106,7 @@
 
     return Array(...json['rows']).map((row) => {
       return Array(...row).map((cell) => {
-        return new Cell(cell.currentState, cell.correctState, cell.canToggle);
+        return new Cell(cell['currentState'], cell['correctState'], cell['canToggle']);
       });
     });
   };
