@@ -114,5 +114,102 @@
       info("New level selected:", this.currentLevel);
     }
   }
+
+  class GridCell {
+    /** @type {number} */
+    #currentState;
+    /** @type {number} */
+    #correctState;
+    /** @type {boolean} */
+    #isLocked;
+    /** @type {HTMLButtonElement} */
+    #buttonElement;
+
+    constructor(initState, correctState, isLocked) {
+      // Validate and set the initial state property
+      if (!GridCell.isStateValid(initState))
+        throw new Error(`Invalid state '${initState}'.`);
+      this.#currentState = initState;
+
+      // Validate and set the correct state property
+      if (!GridCell.isStateValid(correctState))
+        throw new Error(`Invalid state '${correctState}'.`);
+      this.#correctState = correctState;
+
+      // Validate and set the locked property
+      if (typeof isLocked !== 'boolean')
+        throw new Error(`isLocked must be a boolean.`);
+      this.#isLocked = isLocked;
+
+      // Create the cell button property
+      this.#buttonElement = this.#createNewButtonElement();
+    }
+
+    /** 
+     * Validates if the provided state is an integer and between 0-2 (inclusive).
+     * 
+     * @param {number} state 
+     */
+    static isStateValid(state) {
+      return Number.isInteger(state) && state >= 0 && state <= 2;
+    }
+
+    /** Get the current state of the cell. */
+    getState() {
+      return this.#currentState;
+    }
+
+    /** 
+     * Set a new state on the cell. Silently fails if the cell is locked. 
+     * 
+     * @param {number} state 
+     */
+    setState(state) {
+      if (!GridCell.isStateValid(state))
+        throw new Error(`Invalid state '${state}'`);
+      if (!this.#isLocked)
+        this.#currentState = state;
+    }
+
+    /** Get the expected correct state of the cell. */
+    getCorrectState() {
+      return this.#correctState;
+    }
+
+    /** Check if the cell is locked. */
+    isLocked() {
+      return this.#isLocked;
+    }
+
+    /** Check if the current state is correct. */
+    isCorrect() {
+      return this.getState() === this.getCorrectState();
+    }
+
+    /** Gets the button HTML element for this cell. */
+    getButtonElement() {
+      return this.#buttonElement;
+    }
+
+    /** Creates a new button HTML element for the cell. */
+    #createNewButtonElement() {
+      // TODO: Add style to button element
+      const element = document.createElement("button");
+      element.value = this.getState();
+      element.addEventListener('click', (e) => {this.onClick(e);});
+      return element;
+    }
+
+    /** 
+     * Click event listener added to the cell button.
+     * 
+     * @param {PointerEvent} event 
+     */
+    onClick(event) {
+      if (!this.isLocked()) {
+        // TODO: Change state
+      }
+    }
+  }
   const gameLevel = new Level();
 })();
