@@ -9,13 +9,13 @@
     constructor(currentState, correctState, canToggle) {
       const validateState = (state) => {
         if (typeof state !== 'number' || !Number.isInteger(state) || state < 0 || state > 2)
-          throw new Error(`Invalid state '${state}'`);
+          throw new TypeError(`Invalid state '${state}'`);
         return state;
       };
       this.currentState = validateState(currentState);
       this.correctState = validateState(correctState);
       if (typeof canToggle !== 'boolean')
-        throw new Error('Invalid canToggle parameter');
+        throw new TypeError('Invalid canToggle parameter');
       this.canToggle = canToggle;
     }
   }
@@ -70,7 +70,7 @@
      */
     const setLevel = (value) => {
       if (!isLevelValid(value))
-        throw new Error(`Invalid level "${value}"`);
+        throw new TypeError(`Invalid level "${value}"`);
       element.value = value;
     }
 
@@ -94,7 +94,7 @@
 
     // Ensure provided level is valid
     if (!gameLevel.isLevelValid(level))
-      throw new Error(`Invalid level '${level}'.`);
+      throw new TypeError(`Invalid level '${level}'.`);
 
     // Make the fetch request
     const response = await fetch(API_BASE + level);
