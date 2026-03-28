@@ -1,4 +1,26 @@
 (async function () {
+  class Cell {
+    /**
+     * Individual cell of the puzzle
+     * @param {number} currentState
+     * @param {number} correctState
+     * @param {boolean} canToggle
+     */
+    constructor(currentState, correctState, canToggle) {
+      const validateState = (state) => {
+        if (typeof state !== 'number' || !Number.isInteger(state) || state < 0 || state > 2)
+          throw new Error(`Invalid state '${state}'`);
+        return state;
+      };
+      this.currentState = validateState(currentState);
+      this.correctState = validateState(correctState);
+      if (typeof canToggle !== 'boolean')
+        throw new Error('Invalid canToggle parameter');
+      this.canToggle = canToggle;
+    }
+  }
+
+
   /** 
    * Game level object
    */
