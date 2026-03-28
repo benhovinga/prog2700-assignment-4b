@@ -211,5 +211,28 @@
       }
     }
   }
+
+  class Puzzle {
+    #gameGridElement;
+
+    constructor(level, rows) {
+      this.level = level;
+    }
+
+    static API_BASE = "https://prog2700.onrender.com/threeinarow/";
+
+    static async #fetchJSON(url) {
+      const response = await fetch(url);
+      if (!response.ok)
+        throw new Error(`HTTP error! Status: ${response.status} ${response.statusText}`);
+      return await response.json();
+    }
+
+    static async new(level) {
+      if (!Level.isLevelValid(level))
+        throw new Error("potato");
+    }
+  }
+
   const gameLevel = new Level();
 })();
