@@ -87,7 +87,7 @@
   /**
    * Makes a request to the API to get a new puzzle.
    * @param {string} level 
-   * @returns {Cell[][]}
+   * @returns {Promise<Cell[][]>}
    */
   const fetchNewPuzzle = async (level) => {
     const API_BASE = "https://prog2700.onrender.com/threeinarow/";
