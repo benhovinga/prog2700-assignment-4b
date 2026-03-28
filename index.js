@@ -103,7 +103,10 @@
 
     // Parse the json
     const json = await response.json();
+    if (!Object.hasOwn(json, "rows"))
+      throw new Error("API error! Response missing 'rows' property.");
 
+    // Map the 2D array of cells from the API
     return Array(...json['rows']).map((row) => {
       return Array(...row).map((cell) => {
         return new Cell(cell['currentState'], cell['correctState'], cell['canToggle']);
