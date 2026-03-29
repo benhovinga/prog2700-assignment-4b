@@ -251,6 +251,7 @@
     Array.from(buttons).forEach((button) => {
       button.cellObj.resetCell();
     });
+    gridElement.querySelector('table').classList.remove('complete');
   });
 
 
@@ -259,13 +260,21 @@
   if (!checkPuzzleButton || !(checkPuzzleButton instanceof HTMLButtonElement))
     throw new Error("Fatal Error: Unable to find button element with id 'gameCheckBtn'.");
   checkPuzzleButton.addEventListener('click', (event) => {
+    let complete = true;
     let incorrectCount = 0;
     const buttons = gridElement.querySelectorAll('button');
     Array.from(buttons).forEach((button) => {
+      if (button.cellObj.currentState === 0)
+        complete = false;
       if (!button.cellObj.isCorrect())
         incorrectCount++;
     });
-    alert(`You have ${incorrectCount} incorrect.`);
+    console.debug('complete', complete);
+    console.debug(`You have ${incorrectCount} incorrect.`);
+    if (complete && incorrectCount === 0) {
+      // Win condition here
+      gridElement.querySelector('table').classList.add('complete');
+    }
   });
 
 
@@ -278,6 +287,7 @@
     Array.from(buttons).forEach((button) => {
       button.cellObj.revealAnswer();
     });
+    gridElement.querySelector('table').classList.add('complete');
   })
 
 
