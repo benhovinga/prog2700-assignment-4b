@@ -182,13 +182,16 @@
     });
   };
 
-
+  // Game grid element
   const gridElement = document.getElementById('gameGrid');
   if (!gridElement || !(gridElement instanceof HTMLDivElement))
     throw new Error("Fatal Error: Unable to find element with id 'gameGrid'.");
 
 
-  const loadNewGrid = async () => {
+  /**
+   * Starts a new game
+   */
+  const startNewGame = async () => {
     // Load a new puzzle from the API
     const puzzle = await fetchNewPuzzle(gameLevel.getLevel());
     console.debug(puzzle);
@@ -212,6 +215,18 @@
     });
   }
 
-  await loadNewGrid();
 
+  // Level selector action
+  gameLevel.getElement().addEventListener('change', startNewGame);
+
+
+  // New Game Button
+  const newGameElement = document.getElementById('gameNewBtn');
+  if (!newGameElement || !(newGameElement instanceof HTMLButtonElement))
+    throw new Error("Fatal Error: Unable to find button element with id 'gameNewBtn'.");
+  newGameElement.addEventListener('click', startNewGame);
+
+
+  // First start
+  await startNewGame();
 })();
