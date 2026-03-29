@@ -5,6 +5,12 @@
     throw new Error("Fatal Error: Unable to find element with id 'gameGrid'.");
 
 
+  // Message element
+  const messageElement = document.getElementById('gameMessage');
+  if (!messageElement || !(messageElement instanceof HTMLDivElement))
+    throw new Error("Fatal Error: Unable to find button element with id 'gameMessage'.");
+
+
   // New game button
   const newGameButton = document.getElementById('gameNewBtn');
   if (!newGameButton || !(newGameButton instanceof HTMLButtonElement))
@@ -33,6 +39,17 @@
   const showIncorrectCheckbox = document.getElementById('gameShowIncorrect');
   if (!showIncorrectCheckbox || !(showIncorrectCheckbox instanceof HTMLInputElement))
     throw new Error("Fatal Error: Unable to find button element with id 'gameShowIncorrect'.");
+
+
+  // Clears the message
+  const clearMessage = () => {
+    messageElement.innerHTML = "";
+    messageElement.className = "";
+  }
+
+  const removeComplete = () => {
+    gridElement.querySelector('table').classList.remove('complete');
+  }
 
 
   class Cell {
@@ -81,9 +98,9 @@
     updateButtonStyle() {
       this.button.innerHTML = Cell.stateToValue(this.currentState);
       this.button.classList.remove('cell-x', 'cell-o', 'bad');
-      if (this.currentState === 1) 
+      if (this.currentState === 1)
         this.button.classList.add('cell-x');
-      else if (this.currentState === 2) 
+      else if (this.currentState === 2)
         this.button.classList.add('cell-o');
     }
 
@@ -229,9 +246,11 @@
 
   /** Starts a new game */
   const startNewGame = async () => {
+    // Clear any message
+    clearMessage();
+
     // Load a new puzzle from the API
     const puzzle = await fetchNewPuzzle(gameLevel.getLevel());
-    console.debug(puzzle);
 
     // Clear the grid element
     gridElement.innerHTML = "";
@@ -267,15 +286,18 @@
 
   // Restart game button clicked
   restartGameButton.addEventListener('click', () => {
+    clearMessage();
+    removeComplete();
     getButtons().forEach((button) => {
       button.cellObj.resetCell();
     });
-    gridElement.querySelector('table').classList.remove('complete');
   });
 
 
   // Check puzzle button clicked
   checkPuzzleButton.addEventListener('click', () => {
+    clearMessage();
+    removeComplete();
     let complete = true;
     let incorrectCount = 0;
     getButtons().forEach((button) => {
@@ -289,17 +311,24 @@
         }
       }
     });
-    console.debug('complete', complete);
-    console.debug(`You have ${incorrectCount} incorrect.`);
-    if (complete && incorrectCount === 0) {
-      // Win condition here
-      gridElement.querySelector('table').classList.add('complete');
+    if (incorrectCount === 0) {
+      if (complete){
+        gridElement.querySelector('table').classList.add('complete');
+        messageElement.innerText = "Winner!";
+        messageElement.classList.add('success');
+      } else {
+        messageElement.innerText = "No mistakes found";
+      }
+    } else {
+      messageElement.innerText = "Mistakes found";
+      messageElement.classList.add('warn');
     }
   });
 
 
   // Answer puzzle button clicked
   answerPuzzleButton.addEventListener('click', () => {
+    clearMessage();
     getButtons().forEach((button) => {
       button.cellObj.revealAnswer();
     });
@@ -308,7 +337,8 @@
 
 
   // Show incorrect squares was unchecked
-  showIncorrectCheckbox.addEventListener('change', (e)=>{
+  showIncorrectCheckbox.addEventListener('change', (e) => {
+    clearMessage();
     if (!e.target.checked)
       getButtons().forEach((button) => button.cellObj.updateButtonStyle());
   });
