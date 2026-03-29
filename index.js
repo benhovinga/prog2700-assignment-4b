@@ -7,16 +7,82 @@
      * @param {boolean} canToggle
      */
     constructor(currentState, correctState, canToggle) {
-      const validateState = (state) => {
-        if (typeof state !== 'number' || !Number.isInteger(state) || state < 0 || state > 2)
-          throw new TypeError(`Invalid state '${state}'`);
-        return state;
-      };
-      this.currentState = validateState(currentState);
-      this.correctState = validateState(correctState);
+      this.currentState = Cell.validateState(currentState);
+      this.correctState = Cell.validateState(correctState);
       if (typeof canToggle !== 'boolean')
         throw new TypeError('Invalid canToggle parameter');
       this.canToggle = canToggle;
+      this.createButton();
+    }
+
+    createButton() {
+      this.button = document.createElement('button');;
+      this.button.classList.add('cell');
+      this.button.cellObj = this;
+
+      // Apply styles to the button
+      this.updateButtonStyle();
+
+      // Disable locked cells
+      if (!this.canToggle) {
+        this.button.disabled = true;
+      }
+
+      // On left click, cycle state forward
+      this.button.addEventListener('click', () => {
+        this.cycleCell();
+      });
+
+      // On right click, cycle state reversed
+      this.button.addEventListener('contextmenu', (event) => {
+        event.preventDefault();
+        this.cycleCellRev();
+      });
+    }
+
+    updateButtonStyle() {
+      this.button.innerHTML = Cell.stateToValue(this.currentState);
+      if (this.currentState === 0) {
+        this.button.classList.remove('cell-x', 'cell-o');
+      } else if (this.currentState === 1) {
+        this.button.classList.add('cell-x');
+        this.button.classList.remove('cell-o');
+      } else if (this.currentState === 2) {
+        this.button.classList.add('cell-o');
+        this.button.classList.remove('cell-x');
+      }
+    }
+
+    cycleCell() {
+      if (this.currentState < 2) this.currentState++;
+      else this.currentState = 0;
+      this.updateButtonStyle();
+    }
+
+    cycleCellRev() {
+      if (this.currentState > 0) this.currentState--;
+      else this.currentState = 2;
+      this.updateButtonStyle();
+    }
+
+    isCorrect() {
+      return this.currentState === this.correctState;
+    }
+
+    static validateState(state) {
+      if (typeof state !== 'number' || !Number.isInteger(state) || state < 0 || state > 2)
+        throw new TypeError(`Invalid state '${state}'`);
+      return state;
+    }
+
+    static stateToValue(state) {
+      if (state === 0)
+        return "&nbsp;";
+      else if (state === 1)
+        return "X";
+      else if (state === 2)
+        return "O";
+      throw new TypeError(`Invalid state '${state}'`);
     }
   }
 
@@ -40,7 +106,7 @@
     const element = document.getElementById('gameLevelSelect');
     if (!element || !(element instanceof HTMLSelectElement))
       throw new Error("Fatal Error: Unable to find select element with id 'gameLevelSelect'.");
-    
+
     /** 
      * Returns the level selector HTML element
      * 
@@ -119,25 +185,29 @@
   if (!gridElement || !(gridElement instanceof HTMLDivElement))
     throw new Error("Fatal Error: Unable to find element with id 'gameGrid'.");
 
+
   const loadNewGrid = async () => {
+    // Load a new puzzle from the API
     const puzzle = await fetchNewPuzzle(gameLevel.getLevel());
     console.debug(puzzle);
-    gridElement.innerHTML = ""; // Reset element
 
+    // Clear the grid element
+    gridElement.innerHTML = "";
+
+    // Create new table for the cells and add it to the grid element
     const tableElement = document.createElement('table');
+    gridElement.appendChild(tableElement);
 
     puzzle.forEach((row) => {
+      // Add row to table
       const rowElement = tableElement.insertRow(-1);
+
       row.forEach((cell) => {
+        // Add cell to row
         const cellElement = rowElement.insertCell(-1);
-        const buttonElement = document.createElement('button');
-        buttonElement.innerText = cell.currentState;
-        if (!cell.canToggle)
-          buttonElement.disabled = true;
-        cellElement.appendChild(buttonElement);
+        cellElement.appendChild(cell.button);
       });
     });
-    gridElement.appendChild(tableElement);
   }
 
   await loadNewGrid();
