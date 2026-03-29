@@ -1,4 +1,34 @@
 (async function () {
+  // Game grid element
+  const gridElement = document.getElementById('gameGrid');
+  if (!gridElement || !(gridElement instanceof HTMLDivElement))
+    throw new Error("Fatal Error: Unable to find element with id 'gameGrid'.");
+
+
+  // New game button
+  const newGameButton = document.getElementById('gameNewBtn');
+  if (!newGameButton || !(newGameButton instanceof HTMLButtonElement))
+    throw new Error("Fatal Error: Unable to find button element with id 'gameNewBtn'.");
+
+
+  // Restart game button
+  const restartGameButton = document.getElementById('gameRestartBtn');
+  if (!restartGameButton || !(restartGameButton instanceof HTMLButtonElement))
+    throw new Error("Fatal Error: Unable to find button element with id 'gameRestartBtn'.");
+
+
+  // Check puzzle button
+  const checkPuzzleButton = document.getElementById('gameCheckBtn');
+  if (!checkPuzzleButton || !(checkPuzzleButton instanceof HTMLButtonElement))
+    throw new Error("Fatal Error: Unable to find button element with id 'gameCheckBtn'.");
+
+
+  // Answer puzzle button
+  const answerPuzzleButton = document.getElementById('gameAnswerBtn');
+  if (!answerPuzzleButton || !(answerPuzzleButton instanceof HTMLButtonElement))
+    throw new Error("Fatal Error: Unable to find button element with id 'gameAnswerBtn'.");
+
+
   class Cell {
     /**
      * Individual cell of the puzzle
@@ -104,9 +134,7 @@
   }
 
 
-  /** 
-   * Game level object
-   */
+  /** Game level object */
   const gameLevel = (() => {
     /** All supported levels */
     const LEVELS = Object.freeze([
@@ -169,8 +197,7 @@
 
   /**
    * Makes a request to the API to get a new puzzle.
-   * @param {string} level 
-   * @returns {Promise<Cell[][]>}
+   * @param {string} level
    */
   const fetchNewPuzzle = async (level) => {
     const API_BASE = "https://prog2700.onrender.com/threeinarow/";
@@ -197,15 +224,8 @@
     });
   };
 
-  // Game grid element
-  const gridElement = document.getElementById('gameGrid');
-  if (!gridElement || !(gridElement instanceof HTMLDivElement))
-    throw new Error("Fatal Error: Unable to find element with id 'gameGrid'.");
 
-
-  /**
-   * Starts a new game
-   */
+  /** Starts a new game */
   const startNewGame = async () => {
     // Load a new puzzle from the API
     const puzzle = await fetchNewPuzzle(gameLevel.getLevel());
@@ -231,39 +251,32 @@
   }
 
 
-  // Level selector action
+  /** Get all buttons as an array */
+  const getButtons = () => Array.from(gridElement.querySelectorAll('button'));
+
+
+  // New level selected
   gameLevel.getElement().addEventListener('change', startNewGame);
 
 
-  // New game button
-  const newGameButton = document.getElementById('gameNewBtn');
-  if (!newGameButton || !(newGameButton instanceof HTMLButtonElement))
-    throw new Error("Fatal Error: Unable to find button element with id 'gameNewBtn'.");
+  // New game button clicked
   newGameButton.addEventListener('click', startNewGame);
 
 
-  // Restart game button
-  const restartGameButton = document.getElementById('gameRestartBtn');
-  if (!restartGameButton || !(restartGameButton instanceof HTMLButtonElement))
-    throw new Error("Fatal Error: Unable to find button element with id 'gameRestartBtn'.");
-  restartGameButton.addEventListener('click', (event) => {
-    const buttons = gridElement.querySelectorAll('button');
-    Array.from(buttons).forEach((button) => {
+  // Restart game button clicked
+  restartGameButton.addEventListener('click', () => {
+    getButtons().forEach((button) => {
       button.cellObj.resetCell();
     });
     gridElement.querySelector('table').classList.remove('complete');
   });
 
 
-  // Check puzzle button
-  const checkPuzzleButton = document.getElementById('gameCheckBtn');
-  if (!checkPuzzleButton || !(checkPuzzleButton instanceof HTMLButtonElement))
-    throw new Error("Fatal Error: Unable to find button element with id 'gameCheckBtn'.");
-  checkPuzzleButton.addEventListener('click', (event) => {
+  // Check puzzle button clicked
+  checkPuzzleButton.addEventListener('click', () => {
     let complete = true;
     let incorrectCount = 0;
-    const buttons = gridElement.querySelectorAll('button');
-    Array.from(buttons).forEach((button) => {
+    getButtons().forEach((button) => {
       if (button.cellObj.currentState === 0)
         complete = false;
       if (!button.cellObj.isCorrect())
@@ -278,13 +291,9 @@
   });
 
 
-  // Answer puzzle button
-  const answerPuzzleButton = document.getElementById('gameAnswerBtn');
-  if (!answerPuzzleButton || !(answerPuzzleButton instanceof HTMLButtonElement))
-    throw new Error("Fatal Error: Unable to find button element with id 'gameAnswerBtn'.");
-  answerPuzzleButton.addEventListener('click', (event) => {
-    const buttons = gridElement.querySelectorAll('button');
-    Array.from(buttons).forEach((button) => {
+  // Answer puzzle button clicked
+  answerPuzzleButton.addEventListener('click', () => {
+    getButtons().forEach((button) => {
       button.cellObj.revealAnswer();
     });
     gridElement.querySelector('table').classList.add('complete');
