@@ -68,6 +68,8 @@
     }
 
     isCorrect() {
+      if (this.currentState === 0)
+        return true;
       return this.currentState === this.correctState;
     }
 
@@ -244,6 +246,21 @@
     Array.from(buttons).forEach((button) => {
       button.cellObj.resetCell();
     });
+  });
+
+
+  // Check puzzle button
+  const checkPuzzleButton = document.getElementById('gameCheckBtn');
+  if (!checkPuzzleButton || !(checkPuzzleButton instanceof HTMLButtonElement))
+    throw new Error("Fatal Error: Unable to find button element with id 'gameCheckBtn'.");
+  checkPuzzleButton.addEventListener('click', (event) => {
+    let incorrectCount = 0;
+    const buttons = gridElement.querySelectorAll('button');
+    Array.from(buttons).forEach((button) => {
+      if (!button.cellObj.isCorrect())
+        incorrectCount++;
+    });
+    alert(`You have ${incorrectCount} incorrect.`);
   });
 
 
