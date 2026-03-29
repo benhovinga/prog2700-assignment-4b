@@ -113,4 +113,33 @@
       });
     });
   };
+
+
+  const gridElement = document.getElementById('gameGrid');
+  if (!gridElement || !(gridElement instanceof HTMLDivElement))
+    throw new Error("Fatal Error: Unable to find element with id 'gameGrid'.");
+
+  const loadNewGrid = async () => {
+    const puzzle = await fetchNewPuzzle(gameLevel.getLevel());
+    console.debug(puzzle);
+    gridElement.innerHTML = ""; // Reset element
+
+    const tableElement = document.createElement('table');
+
+    puzzle.forEach((row) => {
+      const rowElement = tableElement.insertRow(-1);
+      row.forEach((cell) => {
+        const cellElement = rowElement.insertCell(-1);
+        const buttonElement = document.createElement('button');
+        buttonElement.innerText = cell.currentState;
+        if (!cell.canToggle)
+          buttonElement.disabled = true;
+        cellElement.appendChild(buttonElement);
+      });
+    });
+    gridElement.appendChild(tableElement);
+  }
+
+  await loadNewGrid();
+
 })();
