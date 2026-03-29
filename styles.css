@@ -37,6 +37,5 @@ th, td {
 }
 
 .cell-bad {
-    background-color: #FF0000;
-    color: #000000;
+    border: 2px dashed #FF0000;
 }
