@@ -73,6 +73,11 @@
       return this.currentState === this.correctState;
     }
 
+    revealAnswer() {
+      this.currentState = this.correctState;
+      this.updateButtonStyle();
+    }
+
     resetCell() {
       if (!this.canToggle)
         this.currentState = this.correctState;
@@ -262,6 +267,18 @@
     });
     alert(`You have ${incorrectCount} incorrect.`);
   });
+
+
+  // Answer puzzle button
+  const answerPuzzleButton = document.getElementById('gameAnswerBtn');
+  if (!answerPuzzleButton || !(answerPuzzleButton instanceof HTMLButtonElement))
+    throw new Error("Fatal Error: Unable to find button element with id 'gameAnswerBtn'.");
+  answerPuzzleButton.addEventListener('click', (event) => {
+    const buttons = gridElement.querySelectorAll('button');
+    Array.from(buttons).forEach((button) => {
+      button.cellObj.revealAnswer();
+    });
+  })
 
 
   // Start first game
