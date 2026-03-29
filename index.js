@@ -36,7 +36,8 @@
       // On right click, cycle state reversed
       this.button.addEventListener('contextmenu', (event) => {
         event.preventDefault();
-        this.cycleCellRev();
+        if (this.canToggle)
+          this.cycleCellRev();
       });
     }
 
