@@ -29,6 +29,12 @@
     throw new Error("Fatal Error: Unable to find button element with id 'gameAnswerBtn'.");
 
 
+  // Show incorrect squares checkbox
+  const showIncorrectCheckbox = document.getElementById('gameShowIncorrect');
+  if (!showIncorrectCheckbox || !(showIncorrectCheckbox instanceof HTMLInputElement))
+    throw new Error("Fatal Error: Unable to find button element with id 'gameShowIncorrect'.");
+
+
   class Cell {
     /**
      * Individual cell of the puzzle
@@ -74,15 +80,11 @@
 
     updateButtonStyle() {
       this.button.innerHTML = Cell.stateToValue(this.currentState);
-      if (this.currentState === 0) {
-        this.button.classList.remove('cell-x', 'cell-o');
-      } else if (this.currentState === 1) {
+      this.button.classList.remove('cell-x', 'cell-o', 'bad');
+      if (this.currentState === 1) 
         this.button.classList.add('cell-x');
-        this.button.classList.remove('cell-o');
-      } else if (this.currentState === 2) {
+      else if (this.currentState === 2) 
         this.button.classList.add('cell-o');
-        this.button.classList.remove('cell-x');
-      }
     }
 
     cycleCell() {
@@ -279,8 +281,13 @@
     getButtons().forEach((button) => {
       if (button.cellObj.currentState === 0)
         complete = false;
-      if (!button.cellObj.isCorrect())
+      if (!button.cellObj.isCorrect()) {
         incorrectCount++;
+        if (showIncorrectCheckbox.checked) {
+          button.innerHTML = '!';
+          button.classList.add('bad');
+        }
+      }
     });
     console.debug('complete', complete);
     console.debug(`You have ${incorrectCount} incorrect.`);
@@ -297,7 +304,14 @@
       button.cellObj.revealAnswer();
     });
     gridElement.querySelector('table').classList.add('complete');
-  })
+  });
+
+
+  // Show incorrect squares was unchecked
+  showIncorrectCheckbox.addEventListener('change', (e)=>{
+    if (!e.target.checked)
+      getButtons().forEach((button) => button.cellObj.updateButtonStyle());
+  });
 
 
   // Start first game
