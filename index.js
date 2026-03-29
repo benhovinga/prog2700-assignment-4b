@@ -30,7 +30,8 @@
 
       // On left click, cycle state forward
       this.button.addEventListener('click', () => {
-        this.cycleCell();
+        if (this.canToggle)
+          this.cycleCellRev();
       });
 
       // On right click, cycle state reversed
