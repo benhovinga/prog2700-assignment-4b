@@ -31,7 +31,7 @@
       // On left click, cycle state forward
       this.button.addEventListener('click', () => {
         if (this.canToggle)
-          this.cycleCellRev();
+          this.cycleCell();
       });
 
       // On right click, cycle state reversed
@@ -69,6 +69,14 @@
 
     isCorrect() {
       return this.currentState === this.correctState;
+    }
+
+    resetCell() {
+      if (!this.canToggle)
+        this.currentState = this.correctState;
+      else
+        this.currentState = 0;
+      this.updateButtonStyle();
     }
 
     static validateState(state) {
@@ -220,13 +228,25 @@
   gameLevel.getElement().addEventListener('change', startNewGame);
 
 
-  // New Game Button
-  const newGameElement = document.getElementById('gameNewBtn');
-  if (!newGameElement || !(newGameElement instanceof HTMLButtonElement))
+  // New game button
+  const newGameButton = document.getElementById('gameNewBtn');
+  if (!newGameButton || !(newGameButton instanceof HTMLButtonElement))
     throw new Error("Fatal Error: Unable to find button element with id 'gameNewBtn'.");
-  newGameElement.addEventListener('click', startNewGame);
+  newGameButton.addEventListener('click', startNewGame);
 
 
-  // First start
+  // Restart game button
+  const restartGameButton = document.getElementById('gameRestartBtn');
+  if (!restartGameButton || !(restartGameButton instanceof HTMLButtonElement))
+    throw new Error("Fatal Error: Unable to find button element with id 'gameRestartBtn'.");
+  restartGameButton.addEventListener('click', (event) => {
+    const buttons = gridElement.querySelectorAll('button');
+    Array.from(buttons).forEach((button) => {
+      button.cellObj.resetCell();
+    });
+  });
+
+
+  // Start first game
   await startNewGame();
 })();
