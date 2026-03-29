@@ -1,4 +1,10 @@
+header, footer, #gameSelect, #gameGrid, #gameMessage, #gameControls {
+    margin: 1rem auto;
+    width: fit-content;
+}
+
 footer {
+    text-align: center;
     font-size: small;
     font-style: italic;
     margin-top: 2rem;
@@ -16,9 +22,9 @@ th, td {
 }
 
 .cell {
-    width: 40px;
-    height: 40px;
-    font-size: 30px;
+    width: 2.5rem;
+    height: 2.5rem;
+    font-size: 2rem;
     font-weight: bold;
     background-color: #DDDDDD;
     border: 0;
@@ -44,10 +50,27 @@ th, td {
     background-color: #00FF00;
 }
 
+.loading {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    font-size: 1.5rem;
+    font-style: italic;
+}
+
 #gameMessage {
-    height: 40px;
-    font-size: 20px;
+    height: 2.5rem;
+    font-size: 1.5rem;
     font-weight: bold;
+}
+
+#gameControls {
+    text-align: center;
+}
+
+#gameControls > * {
+    margin: 0.5rem 0;
 }
 
 .success {
